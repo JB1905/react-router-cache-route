@@ -103,18 +103,18 @@ export default class CacheRoute extends Component {
           )
 
           if (multiple && isMatchCurrentRoute) {
-            this.cache[currentPathname + currentSearch] = {
+            this.cache[cacheKey] = {
               updateTime: Date.now(),
               pathname: currentPathname,
               search: currentSearch,
-              render: renderSingle
+              render: renderSingle,
             }
 
             Object.entries(this.cache)
               .sort(([, prev], [, next]) => next.updateTime - prev.updateTime)
-              .forEach(([pathname], idx) => {
+              .forEach(([cacheKey], idx) => {
                 if (idx >= maxMultipleCount) {
-                  delete this.cache[pathname]
+                  delete this.cache[cacheKey]
                 }
               })
           }
@@ -123,7 +123,7 @@ export default class CacheRoute extends Component {
             <Fragment>
               {Object.entries(this.cache).map(([multipleCacheKey, { render, pathname }]) => {
                 const recomputedMatch =
-                  multipleCacheKey === currentPathname + currentSearch ? match || computedMatch : null
+                  multipleCacheKey === cacheKey ? match || computedMatch : null
 
                 return (
                   <Fragment key={multipleCacheKey}>
